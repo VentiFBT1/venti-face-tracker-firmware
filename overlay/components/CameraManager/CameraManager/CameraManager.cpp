@@ -79,9 +79,10 @@ void CameraManager::setupCameraPinout()
                                           // improved a lot, but JPEG mode always gives better frame rates.
 
         .jpeg_quality = 8,  // 0-63, for OV series camera sensors, lower number means higher quality // Below 6 stability problems
-        .fb_count = 2,      // When jpeg mode is used, if fb_count more than one, the driver will work in continuous mode.
+        .fb_count = 3,      // Venti: 3 buffers so the camera always has a free buffer while one frame is being sent over Wi-Fi.
+                            // With CAMERA_GRAB_LATEST the oldest unread frame is dropped, so this adds no latency.
         .fb_location = CAMERA_FB_IN_DRAM,
-        .grab_mode = CAMERA_GRAB_LATEST,  // Reconstruction: inferred from the original test-G filename; verify on hardware.
+        .grab_mode = CAMERA_GRAB_LATEST,  // Always hand out the newest frame (lowest latency). Matches the test-G build name.
     };
 }
 

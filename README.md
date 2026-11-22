@@ -16,7 +16,7 @@ This repo stores only the files Venti changed. A build downloads the pinned upst
 | `tools/assemble.sh` | Downloads upstream, applies the overlay and selects the board, all into `work/` |
 | `tools/build-local.ps1` | Builds the same way on Windows with ESP-IDF v5.4.2 |
 | `.github/workflows/build.yml` | Builds on every push to `main` and uploads the `.bin` as an artifact |
-| `CHANGES-fix1.md` | What fix1 changes and why, plus the test plan |
+| `CHANGES-fix1.md`, `CHANGES-fix2.md` | What each fix changes and why, plus the test plan |
 | `recovery/` | Notes from recovering the test-G source |
 
 ### Change a file

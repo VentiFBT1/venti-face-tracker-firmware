@@ -45,8 +45,9 @@ esp_err_t StreamHelpers::stream(httpd_req_t* req)
         if (!fb)
         {
             ESP_LOGE(STREAM_SERVER_TAG, "Camera capture failed");
-            response = ESP_FAIL;
-            // Don't break immediately, try to recover
+            // Venti: don't set response = ESP_FAIL here. Upstream did, which made every later frame skip
+            // sending and then ended the stream, so one missed frame forced the client to reconnect (a hitch).
+            // Skip this frame and try again instead.
             vTaskDelay(pdMS_TO_TICKS(10));
             continue;
         }
