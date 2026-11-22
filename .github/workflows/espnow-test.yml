@@ -1,0 +1,44 @@
+name: ESP-NOW link test
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'espnow-test/**'
+      - '.github/workflows/espnow-test.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [sender, receiver]
+    steps:
+      - uses: actions/checkout@v5
+      - name: Compile with ESP-IDF v5.4.2
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: v5.4.2
+          target: esp32s3
+          path: espnow-test/${{ matrix.app }}
+          command: idf.py build
+      - name: Merge into a single flashable image
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: v5.4.2
+          target: esp32s3
+          path: espnow-test/${{ matrix.app }}
+          command: idf.py merge-bin -f raw
+      - name: Package
+        run: |
+          mkdir -p out
+          name="espnow-test-${{ matrix.app }}-${GITHUB_SHA::7}"
+          sudo cp espnow-test/${{ matrix.app }}/build/merged-binary.bin "out/${name}.bin"
+          sudo chown -R "$(id -u):$(id -g)" out
+          (cd out && sha256sum *.bin > SHA256SUMS.txt)
+      - uses: actions/upload-artifact@v5
+        with:
+          name: espnow-test-${{ matrix.app }}
+          path: out/
+          if-no-files-found: error

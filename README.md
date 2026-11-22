@@ -18,6 +18,7 @@ This repo stores only the files Venti changed. A build downloads the pinned upst
 | `.github/workflows/build.yml` | Builds on every push to `main` and uploads the `.bin` as an artifact |
 | `CHANGES-fix1.md`, `CHANGES-fix2.md` | What each fix changes and why, plus the test plan |
 | `recovery/` | Notes from recovering the test-G source |
+| `espnow-test/` | Separate ESP-NOW tracker-to-dongle link test (own workflow; does not affect the tracker firmware) |
 
 ### Change a file
 
