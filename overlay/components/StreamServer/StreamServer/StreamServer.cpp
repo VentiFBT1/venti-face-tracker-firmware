@@ -33,7 +33,7 @@ esp_err_t StreamHelpers::stream(httpd_req_t* req)
         return response;
 
     httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
-    httpd_resp_set_hdr(req, "X-Framerate", "45");
+    httpd_resp_set_hdr(req, "X-Framerate", "60");
 
     if (SendStreamEvent(eventQueue, StreamState_e::Stream_ON))
         stream_on_sent = true;
