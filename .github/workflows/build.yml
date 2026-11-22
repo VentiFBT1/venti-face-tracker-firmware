@@ -2,10 +2,6 @@ name: Build firmware
 on:
   push:
     branches: [main]
-    # The ESP-NOW link test has its own workflow; changes there don't rebuild the tracker firmware.
-    paths-ignore:
-      - 'espnow-test/**'
-      - '.github/workflows/espnow-test.yml'
   workflow_dispatch:
 permissions:
   contents: read

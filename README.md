@@ -18,7 +18,6 @@ This repo stores only the files Venti changed. A build downloads the pinned upst
 | `.github/workflows/build.yml` | Builds on every push to `main` and uploads the `.bin` as an artifact |
 | `CHANGES-fix1.md`, `CHANGES-fix2.md` | What each fix changes and why, plus the test plan |
 | `recovery/` | Notes from recovering the test-G source |
-| `espnow-test/` | Separate ESP-NOW tracker-to-dongle link test (own workflow; does not affect the tracker firmware) |
 
 ### Change a file
 
@@ -53,3 +52,7 @@ so details are in `recovery/manifest.json`.
 
 At the pinned commit, OpenIris-ESPIDF does not include a license file. The files in `overlay/` are modified
 upstream files, so check EyeTrackVR's licensing terms before redistributing builds commercially.
+
+## Related
+
+ESP-NOW work (face tracker to dongle, and SlimeVR) lives in the separate private repo `VentiFBT1/venti-espnow`.
