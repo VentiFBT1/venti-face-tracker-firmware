@@ -92,29 +92,15 @@ static uvc_fb_t* UVCStreamHelpers::camera_fb_get_cb(void* cb_ctx)
     // This was causing intermittent corruption/glitches because the pointer
     // to the underlying camera buffer was overwritten before TinyUSB returned it.
 
-    // --- Frame pacing BEFORE grabbing a new camera frame ---
-    static int64_t next_deadline_us = 0;                          // next permitted capture time
-    static int rem_acc = 0;                                       // fractional remainder accumulator
-#ifdef CONFIG_UVC_CAM1_FRAMERATE
-    static const int target_fps = CONFIG_UVC_CAM1_FRAMERATE;      // desired FPS (Venti: 45)
-#else
-    static const int target_fps = 45;                             // desired FPS
-#endif
-    static const int64_t us_per_sec = 1000000;                    // 1e6 microseconds
-    static const int base_interval_us = us_per_sec / target_fps;  // 22222 at 45 fps
-    static const int rem_us = us_per_sec % target_fps;            // remainder, distributed below
-
-    const int64_t now_us = esp_timer_get_time();
-    if (next_deadline_us == 0)
+    // Venti fix: no second frame pacer here. usb_device_uvc already paces calls to this callback at the
+    // host-negotiated frame interval (truncated to whole ms: 22 ms at 45 fps). The upstream pacer here used
+    // an exact 22.222 ms deadline, so every so often a call arrived "too early", returned nullptr, and the
+    // UVC task dropped that whole slot: a double-length frame gap (stutter) about once every 1-2 s at 45 fps
+    // and several times a second at 60 fps. esp_camera_fb_get() already waits for the next sensor frame,
+    // so frames now go out at the sensor's own rate.
+    if (s_frame_inflight)
     {
-        // First allowed capture immediately
-        next_deadline_us = now_us;
-    }
-
-    // If a frame is still being transmitted or we are too early, just signal no frame
-    if (s_frame_inflight || now_us < next_deadline_us)
-    {
-        return nullptr;  // host will poll again
+        return nullptr;
     }
 
     // Acquire a fresh frame only when allowed and no frame in flight
@@ -140,17 +126,6 @@ static uvc_fb_t* UVCStreamHelpers::camera_fb_get_cb(void* cb_ctx)
         s_fb.cam_fb_p = nullptr;
         return nullptr;
     }
-
-    // Schedule next frame time (distribute remainder for exact long-term target fps)
-    rem_acc += rem_us;
-    int extra_us = 0;
-    if (rem_acc >= target_fps)
-    {
-        rem_acc -= target_fps;
-        extra_us = 1;
-    }
-    const int64_t candidate_next = next_deadline_us + base_interval_us + extra_us;
-    next_deadline_us = (candidate_next < now_us) ? now_us : candidate_next;
 
     s_frame_inflight = true;
     return &s_fb.uvc_fb;
