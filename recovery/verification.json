@@ -1,0 +1,11 @@
+{
+  "original_binary_sha256": "7bfa7654aae5a98eeb4b3602baa84b1168ba5095fe433afd1a42229805247bcd",
+  "original_binary_copy_identical": true,
+  "partition_layout_matches_supplied_bin": true,
+  "upstream_board_generator_executed": true,
+  "n4r2_profile_and_empty_wifi_checked": true,
+  "camera_latest_frame_setting_present": true,
+  "compilation_performed": false,
+  "hardware_testing_performed": false,
+  "exact_source_equivalence_verified": false
+}

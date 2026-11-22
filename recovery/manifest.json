@@ -1,0 +1,89 @@
+{
+  "status": "original binary preserved; accompanying source is an unverified reconstruction",
+  "original_binary": {
+    "filename": "venti-n4r2-test-G-original-defaults-60fps-latest-frame.bin",
+    "sha256": "7bfa7654aae5a98eeb4b3602baa84b1168ba5095fe433afd1a42229805247bcd",
+    "size_bytes": 1477792,
+    "application_version": "fe4aab4-dirty",
+    "project": "blink",
+    "build_date": "Oct 28 2026",
+    "build_time": "20:58:57",
+    "build_timezone": "not recorded",
+    "esp_idf": "v5.4.2-dirty",
+    "application_offset": "0x10000",
+    "partition_table_offset": "0x8000"
+  },
+  "upstream": {
+    "repository": "https://github.com/EyeTrackVR/OpenIris-ESPIDF",
+    "commit": "fe4aab47ace8187e8aecc0497b371bb06df022b3"
+  },
+  "reconstruction": {
+    "name": "n4r2-test-g-reconstruction1",
+    "compiled": false,
+    "hardware_tested": false,
+    "binary_equivalence_verified": false,
+    "profile": "venti_babble_n4r2",
+    "flash": "4MB",
+    "psram_mode": "quad (inferred from N4R2 module designation)",
+    "grab_mode": "CAMERA_GRAB_LATEST (inferred from original filename)",
+    "sensor_defaults": "preserved from pinned upstream; not independently recovered from the BIN",
+    "uvc_target_fps": 60,
+    "uvc_resolution": "240x240 (upstream default; not yet verified against original runtime)",
+    "unresolved": [
+      "Exact original dirty source patch",
+      "Original sdkconfig and component lockfile equivalence",
+      "Any ESP-IDF local modifications",
+      "Physical performance equivalence"
+    ]
+  },
+  "original_partition_table": [
+    {
+      "name": "nvs",
+      "type": 1,
+      "subtype": 2,
+      "offset": "0x9000",
+      "size": "0x5000",
+      "flags": 0
+    },
+    {
+      "name": "otadata",
+      "type": 1,
+      "subtype": 0,
+      "offset": "0xE000",
+      "size": "0x2000",
+      "flags": 0
+    },
+    {
+      "name": "app0",
+      "type": 0,
+      "subtype": 16,
+      "offset": "0x10000",
+      "size": "0x1E0000",
+      "flags": 0
+    },
+    {
+      "name": "app1",
+      "type": 0,
+      "subtype": 17,
+      "offset": "0x1F0000",
+      "size": "0x1E0000",
+      "flags": 0
+    },
+    {
+      "name": "spiffs",
+      "type": 1,
+      "subtype": 130,
+      "offset": "0x3D0000",
+      "size": "0x20000",
+      "flags": 0
+    },
+    {
+      "name": "coredump",
+      "type": 1,
+      "subtype": 3,
+      "offset": "0x3F0000",
+      "size": "0x10000",
+      "flags": 0
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+name: Build firmware
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Assemble source (pinned upstream + overlay)
+        run: bash tools/assemble.sh
+      - name: Compile with ESP-IDF v5.4.2
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: v5.4.2
+          target: esp32s3
+          path: work
+          command: idf.py build
+      - name: Merge into a single flashable image
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: v5.4.2
+          target: esp32s3
+          path: work
+          command: idf.py merge-bin -f raw
+      - name: Package
+        run: |
+          mkdir -p out
+          name="venti-face-tracker-n4r2-${GITHUB_SHA::7}"
+          sudo cp work/build/merged-binary.bin "out/${name}.bin"
+          sudo chown -R "$(id -u):$(id -g)" out
+          cp work/sdkconfig out/sdkconfig
+          (cd out && sha256sum *.bin > SHA256SUMS.txt)
+          echo "${GITHUB_SHA}" > out/SOURCE-COMMIT.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: venti-face-tracker-firmware
+          path: out/
+          if-no-files-found: error
