@@ -27,8 +27,13 @@ This repo stores only the files Venti changed. A build downloads the pinned upst
 
 ### Get the firmware
 
-**Actions → Build firmware → latest run → Artifacts → venti-face-tracker-firmware.**
-It contains a single merged `.bin`. Flash it at offset 0x0 with the Venti Face Tracker Flasher.
+**Actions → Build firmware → latest run → Artifacts.** There is one artifact per IR LED brightness:
+`venti-face-tracker-firmware-ir30`, `-ir50`, `-ir75` and `-ir100` (PWM duty %). Each holds a single merged `.bin`.
+Flash it at offset 0x0 with the Venti Face Tracker Flasher.
+
+IR brightness can only be set in firmware. Flashing the full merged image also wipes the saved settings area (NVS),
+so the build's brightness always takes effect, and Wi-Fi has to be set again. To change the list of brightness
+builds, edit `ir_duty` in `.github/workflows/build.yml`. The board file's default (30%) is used by local builds.
 
 ### Build locally (Windows, ESP-IDF v5.4.2 terminal)
 

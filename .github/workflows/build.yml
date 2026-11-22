@@ -8,13 +8,20 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Default IR LED brightness (PWM duty %) baked into each build. The tracker has no
+        # brightness setting in the flasher, so each value is a separate .bin to test.
+        ir_duty: [30, 50, 75, 100]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - name: Assemble source (pinned upstream + overlay)
         run: bash tools/assemble.sh
+        env:
+          IR_DUTY: ${{ matrix.ir_duty }}
       - name: Compile with ESP-IDF v5.4.2
         uses: espressif/esp-idf-ci-action@v1
         with:
@@ -32,14 +39,15 @@ jobs:
       - name: Package
         run: |
           mkdir -p out
-          name="venti-face-tracker-n4r2-${GITHUB_SHA::7}"
+          name="venti-face-tracker-n4r2-${GITHUB_SHA::7}-ir${{ matrix.ir_duty }}"
           sudo cp work/build/merged-binary.bin "out/${name}.bin"
           sudo chown -R "$(id -u):$(id -g)" out
           cp work/sdkconfig out/sdkconfig
+          grep -E "LED_EXTERNAL_PWM_DUTY_CYCLE|XCLK_FREQ|CAM1_FRAMERATE" out/sdkconfig
           (cd out && sha256sum *.bin > SHA256SUMS.txt)
           echo "${GITHUB_SHA}" > out/SOURCE-COMMIT.txt
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
-          name: venti-face-tracker-firmware
+          name: venti-face-tracker-firmware-ir${{ matrix.ir_duty }}
           path: out/
           if-no-files-found: error

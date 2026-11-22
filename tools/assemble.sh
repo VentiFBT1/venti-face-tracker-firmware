@@ -17,6 +17,12 @@ rm upstream.zip
 
 cp -R overlay/. work/
 
+# Optional: override the default IR LED brightness (PWM duty %, 0-100) for this build.
+if [ -n "${IR_DUTY:-}" ]; then
+  sed -i "s/^CONFIG_LED_EXTERNAL_PWM_DUTY_CYCLE=.*/CONFIG_LED_EXTERNAL_PWM_DUTY_CYCLE=${IR_DUTY}/" "work/boards/${BOARD}/${BOARD}"
+  echo "IR LED duty set to ${IR_DUTY}%"
+fi
+
 cd work
 python3 tools/switchBoardType.py --board "${BOARD}" --clear-wifi
 echo "Assembled ${UPSTREAM_REPO}@${UPSTREAM_SHA} + overlay for board ${BOARD} in ./work"
