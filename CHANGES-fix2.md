@@ -12,4 +12,8 @@ Cause: two frame pacers fought each other in UVC mode.
 Fix: removed the extra pacer in `camera_fb_get_cb()`. The in-flight guard stays. `esp_camera_fb_get()`
 (still `CAMERA_GRAB_LATEST`, 2 buffers) waits for the next sensor frame, so frames go out evenly at the sensor's rate.
 
-Wi-Fi streaming code is unchanged. Version string: 0.2.1rc0-venti-fix2.
+Wi-Fi streaming code is unchanged.
+
+Version string is reported as plain `0.2.1rc0`, the same as test-G. A suffix like `0.2.1rc0-venti-fix2` made
+Babalonia crash when detecting the tracker (test-G, which reports `0.2.1rc0`, is detected fine).
+To tell builds apart, use the commit id in the .bin file name instead.
